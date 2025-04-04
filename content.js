@@ -44,10 +44,26 @@ function createUkrainianButton() {
         .map(result => result[0].transcript)
         .join('');
       
-      const textarea = document.querySelector('textarea');
-      if (textarea) {
-        textarea.value = transcript;
-        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      // Find the contenteditable div
+      const promptTextarea = document.getElementById('prompt-textarea');
+      if (promptTextarea) {
+        // Create a new paragraph element
+        const p = document.createElement('p');
+        p.textContent = transcript;
+        
+        // Clear existing content
+        promptTextarea.innerHTML = '';
+        
+        // Append the new paragraph
+        promptTextarea.appendChild(p);
+        
+        // Add a trailing break
+        const br = document.createElement('br');
+        br.className = 'ProseMirror-trailingBreak';
+        promptTextarea.appendChild(br);
+        
+        // Dispatch input event to trigger ChatGPT's handlers
+        promptTextarea.dispatchEvent(new Event('input', { bubbles: true }));
       }
     };
     
