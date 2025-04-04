@@ -6,8 +6,8 @@ function createUkrainianButton() {
     align-items: center;
     gap: 8px;
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 40px;
+    right: 15px;
     z-index: 1000;
   `;
 
