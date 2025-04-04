@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Easy Interview - Voice Input",
+    "name": "UncleSolutions - Easy Interview",
     "version": "1.0.0",
     "description": "Adds voice input functionality to ChatGPT with support for Ukrainian, Russian, and English languages",
     "permissions": [

@@ -14,7 +14,7 @@ function createUkrainianButton() {
   const select = document.createElement('select');
   select.className = 'vc-fade-in rounded-md vc-focus-element vc-language-selector';
   select.style.cssText = `
-    font-size: 11px;
+    font-size: 12px;
     max-width: 110px;
     text-indent: 0px;
     position: static;
@@ -114,6 +114,18 @@ function createUkrainianButton() {
       }
     }
   }
+
+  function clearTextarea() {
+    const promptTextarea = document.getElementById('prompt-textarea');
+    if (promptTextarea) {
+      promptTextarea.innerHTML = '<p><br class="ProseMirror-trailingBreak"></p>';
+      const textarea = promptTextarea.parentElement.querySelector('textarea');
+      if (textarea) {
+        textarea.value = '';
+      }
+    }
+    currentTranscript = '';
+  }
   
   function toggleRecording() {
     if (!isRecording) {
@@ -200,6 +212,30 @@ function createUkrainianButton() {
       event.preventDefault(); // Prevent default browser behavior
       toggleRecording();
     }
+  });
+
+  // Watch for message sending
+  function setupMessageObserver() {
+    const sendButton = document.querySelector('button[data-testid="send-button"]');
+    if (sendButton) {
+      sendButton.addEventListener('click', () => {
+        // Clear the textarea after a short delay to ensure the message is sent
+        setTimeout(clearTextarea, 100);
+      });
+    }
+  }
+
+  // Initial setup
+  setupMessageObserver();
+
+  // Watch for new send buttons (in case the page changes)
+  const messageObserver = new MutationObserver((mutations) => {
+    setupMessageObserver();
+  });
+
+  messageObserver.observe(document.body, {
+    childList: true,
+    subtree: true
   });
 
   // Add the select and button to the container
