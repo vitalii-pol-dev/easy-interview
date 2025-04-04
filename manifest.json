@@ -5,6 +5,12 @@
     "description": "Adds Ukrainian voice input for ChatGPT using Web Speech API",
     "permissions": ["scripting", "activeTab"],
     "host_permissions": ["https://chat.openai.com/*"],
+    "content_scripts": [
+        {
+            "matches": ["https://chat.openai.com/*"],
+            "js": ["content.js"]
+        }
+    ],
     "action": {
       "default_popup": "popup.html",
       "default_icon": {
@@ -13,4 +19,4 @@
         "128": "icon.png"
       }
     }
-  }
+}
