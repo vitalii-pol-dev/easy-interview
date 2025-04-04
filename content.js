@@ -4,78 +4,172 @@ function createUkrainianButton() {
   button.id = 'ukrainian-voice-btn';
   button.innerHTML = '🎤 Ukrainian';
   button.style.cssText = `
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 16px;
+    background-color: #3871e0;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    padding: 10px 20px;
-    background-color: #10a37f;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
     z-index: 1000;
-    font-size: 14px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   `;
   
-  button.addEventListener('click', () => {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'uk-UA';
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    
-    recognition.onstart = () => {
-      button.style.backgroundColor = '#0d8a6d';
-      button.innerHTML = '🎤 Recording...';
-    };
-    
-    recognition.onend = () => {
-      button.style.backgroundColor = '#10a37f';
-      button.innerHTML = '🎤 Ukrainian';
-    };
-    
-    recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
-      button.style.backgroundColor = '#10a37f';
-      button.innerHTML = '🎤 Ukrainian';
-    };
-    
-    recognition.onresult = (event) => {
-      const transcript = Array.from(event.results)
-        .map(result => result[0].transcript)
-        .join('');
-      
-      // Find the contenteditable div
-      const promptTextarea = document.getElementById('prompt-textarea');
-      if (promptTextarea) {
-        // Create a new paragraph element
-        const p = document.createElement('p');
-        p.textContent = transcript;
-        
-        // Clear existing content
-        promptTextarea.innerHTML = '';
-        
-        // Append the new paragraph
-        promptTextarea.appendChild(p);
-        
-        // Add a trailing break
-        const br = document.createElement('br');
-        br.className = 'ProseMirror-trailingBreak';
-        promptTextarea.appendChild(br);
-        
-        // Dispatch input event to trigger ChatGPT's handlers
-        promptTextarea.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-    };
-    
-    recognition.start();
-  });
+  let recognition = null;
+  let isRecording = false;
+  let currentTranscript = '';
+  let isFirstResult = true;
+  let lastFinalTranscript = '';
   
-  document.body.appendChild(button);
+  function updateTextarea(text) {
+    const promptTextarea = document.getElementById('prompt-textarea');
+    if (promptTextarea) {
+      // Create a new paragraph element
+      const p = document.createElement('p');
+      p.textContent = text;
+      
+      // Clear existing content
+      promptTextarea.innerHTML = '';
+      
+      // Append the new paragraph
+      promptTextarea.appendChild(p);
+      
+      // Add a trailing break
+      const br = document.createElement('br');
+      br.className = 'ProseMirror-trailingBreak';
+      promptTextarea.appendChild(br);
+      
+      // Update the hidden textarea
+      const textarea = promptTextarea.parentElement.querySelector('textarea');
+      if (textarea) {
+        textarea.value = text;
+      }
+    }
+  }
+  
+  function toggleRecording() {
+    if (!isRecording) {
+      // Start recording
+      recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'uk-UA';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      
+      recognition.onstart = () => {
+        isRecording = true;
+        isFirstResult = true;
+        lastFinalTranscript = currentTranscript;
+        button.style.backgroundColor = '#ff6666';
+        button.innerHTML = '🎤 Recording...';
+      };
+      
+      recognition.onend = () => {
+        if (isRecording) {
+          // If recording was stopped by the system, restart it
+          recognition.start();
+        }
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        isRecording = false;
+        button.style.backgroundColor = '#3871e0';
+        button.innerHTML = '🎤 Ukrainian';
+      };
+      
+      recognition.onresult = (event) => {
+        let interimTranscript = '';
+        let finalTranscript = '';
+        
+        // Process all results
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        
+        if (finalTranscript) {
+          // We have a final result
+          if (isFirstResult) {
+            // For the first result, append to existing transcript
+            currentTranscript = lastFinalTranscript + ' ' + finalTranscript;
+            isFirstResult = false;
+          } else {
+            // For subsequent results, update the current transcript
+            currentTranscript = lastFinalTranscript + ' ' + finalTranscript;
+          }
+          lastFinalTranscript = currentTranscript;
+        }
+        
+        // Show interim results in real-time
+        const displayText = currentTranscript + (interimTranscript ? ' ' + interimTranscript : '');
+        updateTextarea(displayText);
+      };
+      
+      recognition.start();
+    } else {
+      // Stop recording
+      isRecording = false;
+      recognition.stop();
+      button.style.backgroundColor = '#3871e0';
+      button.innerHTML = '🎤 Ukrainian';
+      
+      // Keep the current transcript in the textarea
+      updateTextarea(currentTranscript);
+    }
+  }
+  
+  // Add click event listener
+  button.addEventListener('click', toggleRecording);
+  
+  // Add keyboard shortcut listener
+  document.addEventListener('keydown', (event) => {
+    // Check for Ctrl+X
+    if (event.ctrlKey && event.key.toLowerCase() === 'x') {
+      event.preventDefault(); // Prevent default browser behavior
+      toggleRecording();
+    }
+  });
+
+  return button;
 }
 
-// Wait for the page to load and then inject the button
+function addButtonToContainer() {
+  // Check if button already exists
+  if (!document.getElementById('ukrainian-voice-btn')) {
+    const button = createUkrainianButton();
+    document.body.appendChild(button);
+  }
+}
+
+// Create a MutationObserver to watch for changes
+const observer = new MutationObserver((mutations) => {
+  // Check if our button exists
+  if (!document.getElementById('ukrainian-voice-btn')) {
+    addButtonToContainer();
+  }
+});
+
+// Start observing the document body for changes
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+// Initial button addition
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', createUkrainianButton);
+  document.addEventListener('DOMContentLoaded', addButtonToContainer);
 } else {
-  createUkrainianButton();
-} 
+  addButtonToContainer();
+}
