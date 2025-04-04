@@ -12,29 +12,42 @@ function createUkrainianButton() {
   `;
 
   const select = document.createElement('select');
+  select.className = 'vc-fade-in rounded-md vc-focus-element vc-language-selector';
   select.style.cssText = `
-    height: 40px;
-    padding: 0 12px;
-    background-color: #3871e0;
-    color: white;
-    border: none;
-    border-radius: 20px;
+    font-size: 11px;
+    max-width: 110px;
+    text-indent: 0px;
+    position: static;
+    padding: 4px 20px 4px 8px;
+    background-color: white;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 16px;
-    padding-right: 32px;
+    background-position: right 4px center;
+    background-size: 12px;
+    transition: all 0.2s ease;
   `;
 
+  select.addEventListener('focus', () => {
+    select.style.borderColor = '#3b82f6';
+    select.style.boxShadow = '0 0 0 1px #3b82f6';
+  });
+
+  select.addEventListener('blur', () => {
+    select.style.borderColor = '#e5e7eb';
+    select.style.boxShadow = 'none';
+  });
+
   const languages = [
-    { code: 'uk-UA', name: 'Ukrainian' },
-    { code: 'ru-RU', name: 'Russian' },
-    { code: 'en-US', name: 'English' }
+    { code: 'uk-UA', name: 'Українська' },
+    { code: 'ru-RU', name: 'Pусский' },
+    { code: 'en-US', name: 'English (US)' }
   ];
 
   languages.forEach(lang => {
@@ -51,12 +64,12 @@ function createUkrainianButton() {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
-    width: 40px;
+    height: 28px;
+    width: 28px;
     background-color: #3871e0;
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.2s;
