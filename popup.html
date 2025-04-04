@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ukrainian Voice Input</title>
+  <title>Easy Interview - Voice Input</title>
   <style>
     body {
       width: 300px;
@@ -12,13 +12,40 @@
       font-size: 14px;
       line-height: 1.5;
     }
+    .keyboard-shortcut {
+      background-color: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .language-list {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="instructions">
-    <h3>Ukrainian Voice Input</h3>
-    <p>Look for the Ukrainian button (🎤) in the bottom right corner of the ChatGPT page.</p>
-    <p>Click it to start recording your voice in Ukrainian.</p>
+    <h3>Easy Interview - Voice Input</h3>
+    <p>Look for the voice input button in the bottom right corner of the ChatGPT page.</p>
+    
+    <h4>Supported Languages:</h4>
+    <ul class="language-list">
+      <li>Ukrainian</li>
+      <li>Russian</li>
+      <li>English (US)</li>
+    </ul>
+
+    <h4>How to Use:</h4>
+    <ol>
+      <li>Select your preferred language from the dropdown</li>
+      <li>Click the microphone button or press <span class="keyboard-shortcut">Ctrl + X</span> to start recording</li>
+      <li>Speak your message</li>
+      <li>Click the button again or press <span class="keyboard-shortcut">Ctrl + X</span> to stop recording</li>
+      <li>Click the send button to submit your message</li>
+    </ol>
+
+    <p><em>Note: The text will automatically clear after sending your message.</em></p>
   </div>
 </body>
 </html>
