@@ -27,7 +27,14 @@ function createUkrainianButton() {
   let isRecording = false;
   let currentTranscript = '';
   let isFirstResult = true;
-  let lastFinalTranscript = '';
+  
+  function getCurrentTextareaContent() {
+    const promptTextarea = document.getElementById('prompt-textarea');
+    if (promptTextarea) {
+      return promptTextarea.textContent.trim();
+    }
+    return '';
+  }
   
   function updateTextarea(text) {
     const promptTextarea = document.getElementById('prompt-textarea');
@@ -66,7 +73,8 @@ function createUkrainianButton() {
       recognition.onstart = () => {
         isRecording = true;
         isFirstResult = true;
-        lastFinalTranscript = currentTranscript;
+        // Always use the current textbox content
+        currentTranscript = getCurrentTextareaContent();
         button.style.backgroundColor = '#ff6666';
         button.innerHTML = '🎤 Recording...';
       };
@@ -102,14 +110,13 @@ function createUkrainianButton() {
         if (finalTranscript) {
           // We have a final result
           if (isFirstResult) {
-            // For the first result, append to existing transcript
-            currentTranscript = lastFinalTranscript + ' ' + finalTranscript;
+            // For the first result, append to existing content
+            currentTranscript = currentTranscript + ' ' + finalTranscript;
             isFirstResult = false;
           } else {
             // For subsequent results, update the current transcript
-            currentTranscript = lastFinalTranscript + ' ' + finalTranscript;
+            currentTranscript = currentTranscript + ' ' + finalTranscript;
           }
-          lastFinalTranscript = currentTranscript;
         }
         
         // Show interim results in real-time
