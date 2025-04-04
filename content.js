@@ -1,14 +1,58 @@
 // content.js
 function createUkrainianButton() {
+  const container = document.createElement('div');
+  container.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  `;
+
+  const select = document.createElement('select');
+  select.style.cssText = `
+    height: 40px;
+    padding: 0 12px;
+    background-color: #3871e0;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
+  `;
+
+  const languages = [
+    { code: 'uk-UA', name: 'Ukrainian' },
+    { code: 'ru-RU', name: 'Russian' },
+    { code: 'en-US', name: 'English' }
+  ];
+
+  languages.forEach(lang => {
+    const option = document.createElement('option');
+    option.value = lang.code;
+    option.textContent = lang.name;
+    select.appendChild(option);
+  });
+
   const button = document.createElement('button');
   button.id = 'ukrainian-voice-btn';
-  button.innerHTML = '🎤 Ukrainian';
+  button.innerHTML = '🎤';
   button.style.cssText = `
     display: flex;
     align-items: center;
     justify-content: center;
     height: 40px;
-    padding: 0 16px;
+    width: 40px;
     background-color: #3871e0;
     color: white;
     border: none;
@@ -16,10 +60,6 @@ function createUkrainianButton() {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.2s;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   `;
   
@@ -66,7 +106,7 @@ function createUkrainianButton() {
     if (!isRecording) {
       // Start recording
       recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'uk-UA';
+      recognition.lang = select.value; // Use selected language
       recognition.continuous = true;
       recognition.interimResults = true;
       
@@ -76,7 +116,7 @@ function createUkrainianButton() {
         // Always use the current textbox content
         currentTranscript = getCurrentTextareaContent();
         button.style.backgroundColor = '#ff6666';
-        button.innerHTML = '🎤 Recording...';
+        button.innerHTML = '🎤';
       };
       
       recognition.onend = () => {
@@ -90,7 +130,7 @@ function createUkrainianButton() {
         console.error('Speech recognition error:', event.error);
         isRecording = false;
         button.style.backgroundColor = '#3871e0';
-        button.innerHTML = '🎤 Ukrainian';
+        button.innerHTML = '🎤';
       };
       
       recognition.onresult = (event) => {
@@ -130,7 +170,7 @@ function createUkrainianButton() {
       isRecording = false;
       recognition.stop();
       button.style.backgroundColor = '#3871e0';
-      button.innerHTML = '🎤 Ukrainian';
+      button.innerHTML = '🎤';
       
       // Keep the current transcript in the textarea
       updateTextarea(currentTranscript);
@@ -149,14 +189,18 @@ function createUkrainianButton() {
     }
   });
 
-  return button;
+  // Add the select and button to the container
+  container.appendChild(select);
+  container.appendChild(button);
+
+  return container;
 }
 
 function addButtonToContainer() {
   // Check if button already exists
   if (!document.getElementById('ukrainian-voice-btn')) {
-    const button = createUkrainianButton();
-    document.body.appendChild(button);
+    const container = createUkrainianButton();
+    document.body.appendChild(container);
   }
 }
 

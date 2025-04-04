@@ -1,9 +1,11 @@
 {
     "manifest_version": 3,
-    "name": "Ukrainian Voice Input for ChatGPT",
-    "version": "1.0",
-    "description": "Adds Ukrainian voice input for ChatGPT using Web Speech API",
-    "permissions": ["scripting", "activeTab"],
+    "name": "Easy Interview - Voice Input",
+    "version": "1.0.0",
+    "description": "Adds voice input functionality to ChatGPT with support for Ukrainian, Russian, and English languages",
+    "permissions": [
+        "activeTab"
+    ],
     "host_permissions": [
         "https://chat.openai.com/*",
         "https://chatgpt.com/*"
@@ -17,6 +19,11 @@
             "js": ["content.js"]
         }
     ],
+    "icons": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+    },
     "action": {
       "default_popup": "popup.html",
       "default_icon": {
