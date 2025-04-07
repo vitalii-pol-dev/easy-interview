@@ -60,6 +60,7 @@ function createUkrainianButton() {
   const button = document.createElement('button');
   button.id = 'ukrainian-voice-btn';
   button.innerHTML = '🎤';
+  button.title = 'Press Ctrl + X to start/stop recording';
   button.style.cssText = `
     display: flex;
     align-items: center;
@@ -92,20 +93,14 @@ function createUkrainianButton() {
   function updateTextarea(text) {
     const promptTextarea = document.getElementById('prompt-textarea');
     if (promptTextarea) {
-      // Create a new paragraph element
-      const p = document.createElement('p');
-      p.textContent = text;
+      // Get the current scroll position
+      const scrollTop = promptTextarea.scrollTop;
       
-      // Clear existing content
-      promptTextarea.innerHTML = '';
+      // Update the text content directly
+      promptTextarea.textContent = text;
       
-      // Append the new paragraph
-      promptTextarea.appendChild(p);
-      
-      // Add a trailing break
-      const br = document.createElement('br');
-      br.className = 'ProseMirror-trailingBreak';
-      promptTextarea.appendChild(br);
+      // Restore the scroll position
+      promptTextarea.scrollTop = scrollTop;
       
       // Update the hidden textarea
       const textarea = promptTextarea.parentElement.querySelector('textarea');
@@ -118,7 +113,7 @@ function createUkrainianButton() {
   function clearTextarea() {
     const promptTextarea = document.getElementById('prompt-textarea');
     if (promptTextarea) {
-      promptTextarea.innerHTML = '<p><br class="ProseMirror-trailingBreak"></p>';
+      promptTextarea.textContent = '';
       const textarea = promptTextarea.parentElement.querySelector('textarea');
       if (textarea) {
         textarea.value = '';
@@ -219,6 +214,10 @@ function createUkrainianButton() {
     const sendButton = document.querySelector('button[data-testid="send-button"]');
     if (sendButton) {
       sendButton.addEventListener('click', () => {
+        // Stop recording if it's active
+        if (isRecording) {
+          toggleRecording();
+        }
         // Clear the textarea after a short delay to ensure the message is sent
         setTimeout(clearTextarea, 100);
       });

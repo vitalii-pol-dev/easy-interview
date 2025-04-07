@@ -3,9 +3,7 @@
     "name": "UncleSolutions - Easy Interview",
     "version": "1.0.0",
     "description": "Adds voice input functionality to ChatGPT with support for Ukrainian, Russian, and English languages",
-    "permissions": [
-        "activeTab"
-    ],
+    "permissions": [],
     "host_permissions": [
         "https://chat.openai.com/*",
         "https://chatgpt.com/*"
