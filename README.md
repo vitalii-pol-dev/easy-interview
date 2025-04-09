@@ -27,8 +27,8 @@ A Chrome extension that adds voice input functionality to ChatGPT with support f
 
 ## Privacy
 
-This extension requires storage permissions to maintain authentication state and user preferences. For detailed information about how we handle your data, please see our [Privacy Policy](PRIVACY.md).
+This extension requires storage permissions to maintain authentication state and user preferences. For detailed information about how we handle your data, please see our [Privacy Policy](https://github.com/vitalii-pol-dev/easy-interview/blob/master/PRIVACY.md).
 
 ## Support
 
-For support or questions, please contact [your contact information]. 
+For support or questions, please contact vitalii.polishchuk.us@gmail.com. 
