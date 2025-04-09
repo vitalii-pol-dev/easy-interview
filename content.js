@@ -93,16 +93,10 @@ function createUkrainianButton() {
   function updateTextarea(text) {
     const promptTextarea = document.getElementById('prompt-textarea');
     if (promptTextarea) {
-      // Get the current scroll position
       const scrollTop = promptTextarea.scrollTop;
-      
-      // Update the text content directly
       promptTextarea.textContent = text;
-      
-      // Restore the scroll position
       promptTextarea.scrollTop = scrollTop;
       
-      // Update the hidden textarea
       const textarea = promptTextarea.parentElement.querySelector('textarea');
       if (textarea) {
         textarea.value = text;
@@ -124,16 +118,14 @@ function createUkrainianButton() {
   
   function toggleRecording() {
     if (!isRecording) {
-      // Start recording
       recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = select.value; // Use selected language
+      recognition.lang = select.value;
       recognition.continuous = true;
       recognition.interimResults = true;
       
       recognition.onstart = () => {
         isRecording = true;
         isFirstResult = true;
-        // Always use the current textbox content
         currentTranscript = getCurrentTextareaContent();
         button.style.backgroundColor = '#ff6666';
         button.innerHTML = '🎤';
@@ -141,7 +133,6 @@ function createUkrainianButton() {
       
       recognition.onend = () => {
         if (isRecording) {
-          // If recording was stopped by the system, restart it
           recognition.start();
         }
       };
@@ -157,7 +148,6 @@ function createUkrainianButton() {
         let interimTranscript = '';
         let finalTranscript = '';
         
-        // Process all results
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
@@ -168,66 +158,51 @@ function createUkrainianButton() {
         }
         
         if (finalTranscript) {
-          // We have a final result
           if (isFirstResult) {
-            // For the first result, append to existing content
             currentTranscript = currentTranscript + ' ' + finalTranscript;
             isFirstResult = false;
           } else {
-            // For subsequent results, update the current transcript
             currentTranscript = currentTranscript + ' ' + finalTranscript;
           }
         }
         
-        // Show interim results in real-time
         const displayText = currentTranscript + (interimTranscript ? ' ' + interimTranscript : '');
         updateTextarea(displayText);
       };
       
       recognition.start();
     } else {
-      // Stop recording
       isRecording = false;
       recognition.stop();
       button.style.backgroundColor = '#3871e0';
       button.innerHTML = '🎤';
-      
-      // Keep the current transcript in the textarea
       updateTextarea(currentTranscript);
     }
   }
   
-  // Add click event listener
   button.addEventListener('click', toggleRecording);
   
-  // Add keyboard shortcut listener
   document.addEventListener('keydown', (event) => {
-    // Check for Ctrl+X
     if (event.ctrlKey && event.key.toLowerCase() === 'x') {
-      event.preventDefault(); // Prevent default browser behavior
+      event.preventDefault();
       toggleRecording();
     }
   });
 
-  // Watch for message sending
   function setupMessageObserver() {
     const sendButton = document.querySelector('button[data-testid="send-button"]');
     if (sendButton) {
       sendButton.addEventListener('click', () => {
-        // Stop recording if it's active
         if (isRecording) {
           toggleRecording();
         }
-        // Clear the textarea after a short delay to ensure the message is sent
         setTimeout(clearTextarea, 100);
       });
     }
   }
 
-  // Initial setup
   setupMessageObserver();
 
-  // Watch for new send buttons (in case the page changes)
   const messageObserver = new MutationObserver((mutations) => {
     setupMessageObserver();
   });
@@ -237,27 +212,28 @@ function createUkrainianButton() {
     subtree: true
   });
 
-  // Add the select and button to the container
   container.appendChild(select);
   container.appendChild(button);
 
   return container;
 }
 
-function addButtonToContainer() {
-  // Check if button already exists
-  if (!document.getElementById('ukrainian-voice-btn')) {
+async function addButtonToContainer() {
+  const isAuthenticated = await checkAuth();
+  if (isAuthenticated && !document.getElementById('ukrainian-voice-btn')) {
     const container = createUkrainianButton();
     document.body.appendChild(container);
+  } else if (!isAuthenticated) {
+    const existingButton = document.getElementById('ukrainian-voice-btn');
+    if (existingButton) {
+      existingButton.parentElement.remove();
+    }
   }
 }
 
 // Create a MutationObserver to watch for changes
 const observer = new MutationObserver((mutations) => {
-  // Check if our button exists
-  if (!document.getElementById('ukrainian-voice-btn')) {
-    addButtonToContainer();
-  }
+  addButtonToContainer();
 });
 
 // Start observing the document body for changes
@@ -266,9 +242,34 @@ observer.observe(document.body, {
   subtree: true
 });
 
+// Listen for authentication state changes
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === 'local' && (changes.isLoggedIn || changes.loginTime)) {
+    addButtonToContainer();
+  }
+});
+
 // Initial button addition
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', addButtonToContainer);
 } else {
   addButtonToContainer();
+}
+
+// Function to check if user is authenticated
+async function checkAuth() {
+    return new Promise((resolve) => {
+        chrome.storage.local.get(['isLoggedIn', 'loginTime'], function(result) {
+            if (result.isLoggedIn) {
+                // Check if session has expired (24 hours)
+                const now = new Date().getTime();
+                const loginTime = result.loginTime || 0;
+                const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+                
+                resolve(hoursSinceLogin < 24);
+            } else {
+                resolve(false);
+            }
+        });
+    });
 }

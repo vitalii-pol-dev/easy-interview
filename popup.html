@@ -1,51 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Easy Interview - Voice Input</title>
-  <style>
-    body {
-      width: 300px;
-      padding: 15px;
-      font-family: Arial, sans-serif;
-    }
-    .instructions {
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .keyboard-shortcut {
-      background-color: #f0f0f0;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-    .language-list {
-      margin-top: 10px;
-      padding-left: 20px;
-    }
-  </style>
+    <title>UncleSolutions - Easy Interview</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: none;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="instructions">
-    <h3>Easy Interview - Voice Input</h3>
-    <p>Look for the voice input button in the bottom right corner of the ChatGPT page.</p>
-    
-    <h4>Supported Languages:</h4>
-    <ul class="language-list">
-      <li>Ukrainian</li>
-      <li>Russian</li>
-      <li>English (US)</li>
-    </ul>
-
-    <h4>How to Use:</h4>
-    <ol>
-      <li>Select your preferred language from the dropdown</li>
-      <li>Click the microphone button or press <span class="keyboard-shortcut">Ctrl + X</span> to start recording</li>
-      <li>Speak your message</li>
-      <li>Click the button again or press <span class="keyboard-shortcut">Ctrl + X</span> to stop recording</li>
-      <li>Click the send button to submit your message</li>
-    </ol>
-
-    <p><em>Note: The text will automatically clear after sending your message.</em></p>
-  </div>
+    <div id="loginContainer">
+        <h2>Login</h2>
+        <div class="login-form">
+            <input type="text" id="userId" placeholder="Enter User ID" required>
+            <button id="loginButton">Login</button>
+            <div id="errorMessage" class="error">Invalid User ID</div>
+        </div>
+    </div>
+    <div id="mainContainer" class="container">
+        <!-- Your main extension content will go here -->
+        <h2>Welcome!</h2>
+        <p>You are logged in.</p>
+        <button id="logoutButton">Logout</button>
+    </div>
+    <script src="popup.js"></script>
 </body>
 </html>

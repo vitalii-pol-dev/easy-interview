@@ -2,11 +2,14 @@
     "manifest_version": 3,
     "name": "UncleSolutions - Easy Interview",
     "version": "1.0.0",
-    "description": "Adds voice input functionality to ChatGPT with support for Ukrainian, Russian, and English languages",
-    "permissions": [],
+    "description": "Private extension for authorized users only. Adds voice input functionality to ChatGPT",
+    "permissions": [
+        "storage"
+    ],
     "host_permissions": [
         "https://chat.openai.com/*",
-        "https://chatgpt.com/*"
+        "https://chatgpt.com/*",
+        "https://interview-coder-access-verify.vercel.app/*"
     ],
     "content_scripts": [
         {

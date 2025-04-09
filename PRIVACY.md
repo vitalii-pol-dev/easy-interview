@@ -1,26 +1,47 @@
-# Privacy Policy for Easy Interview - Voice Input
+# Privacy Policy for UncleSolutions - Easy Interview Chrome Extension
 
-Last updated: March 2024
+## Data Collection and Storage
 
-This privacy policy explains how we handle your data when you use our Chrome extension.
+This extension requires the storage permission to provide its core functionality. Here's how we use this permission:
 
-## Data Collection
-We do not collect, store, or transmit any user data. The extension:
-- Does not collect any personal information
-- Does not store any speech or text input
-- Does not track user activity
-- Does not use any analytics or tracking tools
+### What We Store
+- Authentication status (boolean)
+- User ID (string)
+- Login timestamp (number)
+- Selected language preference (string)
 
-## Data Processing
-The extension uses the browser's built-in Web Speech API to:
-- Convert speech to text
-- Process language selection
-- Handle keyboard shortcuts
+### How We Use the Data
+- Maintain user authentication state across browser sessions
+- Manage session expiration (24-hour limit)
+- Remember user's language preference for voice input
+- Provide a seamless user experience
 
-All processing happens locally in your browser. No data is sent to any external servers.
+### Data Security
+- All data is stored locally in your browser
+- No data is transmitted to external servers except for authentication verification
+- Data is automatically cleared when you log out
+- Sessions expire after 24 hours of inactivity
 
-## Changes to This Policy
-We may update this privacy policy from time to time. We will notify you of any changes by posting the new privacy policy on this page.
+### Data Retention
+- Authentication data is stored only while you're logged in
+- All stored data is automatically cleared when you log out
+- Session data expires after 24 hours
+- You can manually clear all data by logging out
 
-## Contact Us
-If you have any questions about this privacy policy, please contact us at [your email address]. 
+## External Services
+
+The extension communicates with:
+- ChatGPT/OpenAI (for voice input functionality)
+- Our authentication server (for user verification)
+
+## Your Rights
+
+You have the right to:
+- Access your stored data
+- Clear your data by logging out
+- Request information about how your data is used
+- Opt out of data storage (though this will limit functionality)
+
+## Contact
+
+If you have any questions about this privacy policy, please contact us at vitalii.polishchuk.us@gmail.com. 
